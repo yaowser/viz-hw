@@ -1,6 +1,6 @@
 PImage myBackground;
 ArrayList<PVector> points = new ArrayList<PVector>();
-int l =4;
+int l =4; //manual change
 
 void settings() {
   myBackground = loadImage("1.jpg");
