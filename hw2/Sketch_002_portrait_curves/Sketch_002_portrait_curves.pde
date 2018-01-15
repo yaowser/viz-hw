@@ -1,6 +1,6 @@
 PImage myBackground;
 ArrayList<PVector> points = new ArrayList<PVector>();
-int l = 1;
+int l =4;
 
 void settings() {
   myBackground = loadImage("1.jpg");
@@ -21,14 +21,18 @@ void draw() {
     }
     endShape();
   } else if(l ==2){
-    curve(points.get(2).x, points.get(2).y, points.get(0).x, points.get(0).y,
-    points.get(1).x, points.get(1).y,points.get(3).x, points.get(3).y);
+    if(points.size() != 0 && points.size() % 4 == 0){
+      for(int i = 0; i < points.size()-3; i+=4){
+        curve(points.get(i+2).x, points.get(i+2).y, points.get(i).x, points.get(i).y,
+        points.get(i+1).x, points.get(i+1).y,points.get(i+3).x, points.get(i+3).y);
+      }
+    }
   } else if(l==3){
     for(int i = 0; i < points.size()-1; i+=1){
        line(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y);
     }
   }else if(l==4){
-    for(int i = 0; i < points.size()-1; i+=4){
+    for(int i = 0; i < points.size()-1; i+=2){
        line(points.get(i).x,points.get(i).y,points.get(i+1).x,points.get(i+1).y);
     }
   }
@@ -42,7 +46,7 @@ void mousePressed() {
     int r = int(red(c));      // Extract red
     int g = int(green(c));    // Extract green
     int b = int(blue(c));     // Extract blue
-    println("fill(" + r + "," + r + "," + b + ");");
+    println("fill(" + r + "," + g + "," + b + ");");
   }
 }
 
@@ -56,20 +60,22 @@ void keyPressed() {
     println("curveVertex(" + points.get(points.size()-1).x + ", " + points.get(points.size()-1).y + ");");
     println("endShape();");
   }
-  if(key == 'b') {
+  if(key == '2') {
     l=2;
-    println("curve("+ points.get(2).x + ","+ points.get(2).y + ","+ 
-    points.get(0).x + ","+ points.get(0).y + ","+ points.get(1).x + ","+
-    points.get(1).y + ","+ + points.get(3).x + ","+ points.get(3).y + ");");
+    for(int i = 0; i < points.size()-3; i+=4){
+      println("curve("+ points.get(i+2).x + ","+ points.get(i+2).y + ","+ 
+      points.get(i).x + ","+ points.get(i).y + ","+ points.get(i+1).x + ","+
+      points.get(i+1).y + ","+ + points.get(i+3).x + ","+ points.get(i+3).y + ");");
+    }
   }
-  if(key == 'c') {
+  if(key == '3') {
     l=3;
     for(int i = 0; i < points.size()-1; i+=1){
        println("line("+points.get(i).x + ","+ points.get(i).y + ","+ 
        points.get(i+1).x + ","+ points.get(i+1).y + ");");
     }
   }
-  if(key == 'z') {
+  if(key == '4') {
     l=4;
     for(int i = 0; i < points.size()-1; i+=2){
        println("line("+points.get(i).x + ","+ points.get(i).y + ","+ 
