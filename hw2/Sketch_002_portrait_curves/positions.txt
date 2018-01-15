@@ -1,7 +1,0 @@
-curveVertex(169, 105);
-curveVertex(167, 165);
-curveVertex(117, 91);
-curveVertex(215, 67);
-curveVertex(223, 161);
-curveVertex(106, 150);
-curveVertex(163, 152);
