@@ -1,6 +1,6 @@
 PImage myBackground;
 ArrayList<PVector> points = new ArrayList<PVector>();
-int l =4; //manual change
+int l =3; //manual change
 
 void settings() {
   myBackground = loadImage("1.jpg");
@@ -56,7 +56,7 @@ void keyPressed() {
       println("curveVertex(" + int(points.get(i).x) + ", " + int(points.get(i).y) + ");");
     }
     println("curveVertex(" + int(points.get(points.size()-1).x) + ", " + int(points.get(points.size()-1).y) + ");");
-    println("endShape();");
+    println("endShape(CLOSE);");
   }
   if(key == '2') { //curve
     l=2;
