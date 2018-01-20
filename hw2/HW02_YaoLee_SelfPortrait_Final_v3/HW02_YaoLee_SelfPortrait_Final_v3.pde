@@ -1,35 +1,62 @@
+// Self Portrait, MSDS6390 HW02
+// 1/22/2018 Yao Yao, Mooyoung Lee
+
+// Reference(Mooyoung Lee); Code from the below sources are used and modified.
+  // https://processing.org/reference
+  // Greenberg, Ira. "Processing, Creative coding and generative art in Processing 2".
+
+// Yao's global variables
 PImage img;
-int p = 0, q = 0;
+int p = 0, q = 0; //size and location parameters
 PFont f;
 
+// Mooyoung's global variables
+
+// collage inputs
+String imgPath = "MooyoungLeeSM.png";
+int xStart = 792, yStart = 0;  // starting pixel of Mooyoung's pallet
+
+// portrait inputs
+float sizeRatio = 1;
+float xOffset = 784, yOffset = 112;
+
+// draw inputs
+float stepSize[] = {0,0,1,2,5,4,3,1,0,0};
+int i = 0, k=0;
+
+// mouse input
+int mouseLeft = 0;
+
+//frame size
 void settings() {           
   img = loadImage("1.jpg");
   int iWidth = img.width*2;
   int iHeight = img.height;
-  size(iWidth, iHeight);
+  size(iWidth + 742, iHeight);
 }
 
+//font
 void setup() {
   f = createFont("Arial",8,true);
+  frameRate(3);
 }
 
+//left click starts or stops, right click saves
 void mousePressed() {
   if(mouseButton == RIGHT) {
     save("final.jpg");
   }
+  if(mouseButton == LEFT) {
+    if (mouseLeft == 0){
+      mouseLeft = 1;
+    } else {
+      mouseLeft = 0;
+    }
+  }
 }
 
-void keyPressed() {
+void keyPressed() { //manual
   if (key == CODED) {
-    float x = img.width*pow(1.1,p)/15;
-    float y = img.height*pow(1.1,p)/30;
-    stroke(1);
-    for(int i = 0; i < img.width; i += x){
-      for(int j = 0; j < img.height; j += y){
-        fill(int(random(255)),int(random(255)),int(random(255)));
-        rect(i,j,x,y);
-      }
-    }
     if (keyCode == UP) { //size
       p++;
     } else if (keyCode == DOWN) {
@@ -42,15 +69,31 @@ void keyPressed() {
   }
 }
 
+//create random background boxes that resize with parameters
 void draw() {
-  textFont(f,16);
+  float x = img.width*pow(1.1,p)/15;
+  float y = img.height*pow(1.1,p)/30;
+  stroke(1);
+  for(int i = 0; i < img.width; i += x){
+    for(int j = 0; j < img.height; j += y){
+      fill(int(random(255)),int(random(255)),int(random(255)));
+      rect(i,j,x,y);
+    }
+  } 
+  
+  //instuctions for Yao's and Mooyoung's portrait
+  textFont(f,20);
   fill(255);
-  text("Press: Left, Right, Up, or Down",0,16);
+  text("Press Arrow Keys: Left, Right, Up, or Down",0,20);
+  fill(5);
+  text("Press Mouse to Stop/Start",img.width*2,20);
   float iWidth = img.width*pow(1.1,p);
   float iHeight = img.height*pow(1.1,p);
   image(img, img.width, 0);
+  
+  //start of Yao's portrait
   stroke(1);
-  fill(19,26,34); // black shoes
+  fill(19,26,34); // black shoes 1
   beginShape();
   curveVertex(0.333333333*iWidth+q,0.864640884*iHeight);
   curveVertex(0.333333333*iWidth+q,0.864640884*iHeight);
@@ -70,7 +113,7 @@ void draw() {
   curveVertex(0.419191919*iWidth+q,0.860497238*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape();  // black shoes 2
   curveVertex(0.217171717*iWidth+q,0.852209945*iHeight);
   curveVertex(0.217171717*iWidth+q,0.852209945*iHeight);
   curveVertex(0.184343434*iWidth+q,0.870165746*iHeight);
@@ -92,7 +135,7 @@ void draw() {
   curveVertex(0.212121212*iWidth+q,0.860497238*iHeight);
   endShape(CLOSE);
     
-  fill(255, 255, 255); // white shoes
+  fill(255, 255, 255); // white shoes 1
   beginShape();
   curveVertex(0.095959596*iWidth+q,0.86878453*iHeight);
   curveVertex(0.095959596*iWidth+q,0.86878453*iHeight);
@@ -105,7 +148,7 @@ void draw() {
   curveVertex(0.202020202*iWidth+q,0.864640884*iHeight);
   endShape(CLOSE);
     
-  beginShape();
+  beginShape(); // white shoes 2
   curveVertex(0.333333333*iWidth+q,0.866022099*iHeight);
   curveVertex(0.333333333*iWidth+q,0.866022099*iHeight);
   curveVertex(0.345959596*iWidth+q,0.885359116*iHeight);
@@ -120,7 +163,7 @@ void draw() {
   curveVertex(0.414141414*iWidth+q,0.85359116*iHeight);
   endShape(CLOSE);
   
-  //shoe laces
+  //shoe laces 1
   line(0.073232323*iWidth+q,0.901933702*iHeight,0.101010101*iWidth+q,0.893646409*iHeight);
   line(0.101010101*iWidth+q,0.893646409*iHeight,0.083333333*iWidth+q,0.888121547*iHeight);
   line(0.083333333*iWidth+q,0.888121547*iHeight,0.108585859*iWidth+q,0.88121547*iHeight);
@@ -130,7 +173,8 @@ void draw() {
   line(0.085858586*iWidth+q,0.879834254*iHeight,0.101010101*iWidth+q,0.886740331*iHeight);
   line(0.101010101*iWidth+q,0.886740331*iHeight,0.078282828*iWidth+q,0.893646409*iHeight);
   line(0.078282828*iWidth+q,0.893646409*iHeight,0.090909091*iWidth+q,0.906077348*iHeight);
-    
+  
+  //shoe laces 2
   line(0.396464646*iWidth+q,0.89640884*iHeight,0.411616162*iWidth+q,0.883977901*iHeight);
   line(0.411616162*iWidth+q,0.883977901*iHeight,0.381313131*iWidth+q,0.882596685*iHeight);
   line(0.381313131*iWidth+q,0.882596685*iHeight,0.401515152*iWidth+q,0.870165746*iHeight);
@@ -196,7 +240,7 @@ void draw() {
   curveVertex(0.436868687*iWidth+q,0.486187845*iHeight);
   endShape(CLOSE);
   
-  fill(37,91,191); //undershirt
+  fill(37,91,191); //undershirt 1
   beginShape();
   curveVertex(0.106060606*iWidth+q,0.363259669*iHeight);
   curveVertex(0.106060606*iWidth+q,0.363259669*iHeight);
@@ -217,7 +261,7 @@ void draw() {
   curveVertex(0.439393939*iWidth+q,0.38121547*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape(); //undershirt 2
   curveVertex(0.315656566*iWidth+q,0.360497238*iHeight);
   curveVertex(0.315656566*iWidth+q,0.360497238*iHeight);
   curveVertex(0.204545455*iWidth+q,0.367403315*iHeight);
@@ -249,7 +293,7 @@ void draw() {
   curveVertex(0.212121212*iWidth+q,0.36878453*iHeight);
   endShape(CLOSE);
   
-  fill(198,160,139); //brown bear
+  fill(198,160,139); //brown bear shape
   beginShape();
   curveVertex(0.702020202*iWidth+q,0.070441989*iHeight);
   curveVertex(0.702020202*iWidth+q,0.070441989*iHeight);
@@ -338,7 +382,7 @@ void draw() {
   curveVertex(0.707070707*iWidth+q,0.069060773*iHeight);
   endShape(CLOSE);
   
-  fill(231,217,188);//bear light parts
+  fill(231,217,188);//bear light parts 1
   beginShape();
   curveVertex(0.441919192*iWidth+q,0.451657459*iHeight);
   curveVertex(0.441919192*iWidth+q,0.451657459*iHeight);
@@ -352,7 +396,7 @@ void draw() {
   curveVertex(0.452020202*iWidth+q,0.527624309*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape();//bear light parts 2
   curveVertex(0.952020202*iWidth+q,0.535911602*iHeight);
   curveVertex(0.952020202*iWidth+q,0.535911602*iHeight);
   curveVertex(0.888888889*iWidth+q,0.580110497*iHeight);
@@ -377,7 +421,7 @@ void draw() {
   curveVertex(0.964646465*iWidth+q,0.57320442*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape();//bear light parts 3
   curveVertex(0.946969697*iWidth+q,0.389502762*iHeight);
   curveVertex(0.946969697*iWidth+q,0.389502762*iHeight);
   curveVertex(0.906565657*iWidth+q,0.429558011*iHeight);
@@ -390,7 +434,7 @@ void draw() {
   curveVertex(0.964646465*iWidth+q,0.439226519*iHeight);
   endShape(CLOSE);
   
-  fill(112,250,253); //blue sweater
+  fill(112,250,253); //blue sweater 1
   beginShape();
   curveVertex(0.093434343*iWidth+q,0.461325967*iHeight);
   curveVertex(0.093434343*iWidth+q,0.461325967*iHeight);
@@ -413,7 +457,7 @@ void draw() {
   curveVertex(0.095959596*iWidth+q,0.462707182*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape(); //blue sweater 2
   curveVertex(0.20959596*iWidth+q,0.142265193*iHeight);
   curveVertex(0.20959596*iWidth+q,0.142265193*iHeight);
   curveVertex(0.214646465*iWidth+q,0.149171271*iHeight);
@@ -449,6 +493,7 @@ void draw() {
   curveVertex(0.207070707*iWidth+q,0.145027624*iHeight);
   endShape(CLOSE);
   
+  //outlines of blue sweater
   line(0.25*iWidth+q,0.363259669*iHeight,0.232323232*iWidth+q,0.309392265*iHeight);
   line(0.285353535*iWidth+q,0.388121547*iHeight,0.282828283*iWidth+q,0.361878453*iHeight);
   line(0.318181818*iWidth+q,0.356353591*iHeight,0.303030303*iWidth+q,0.302486188*iHeight);
@@ -462,7 +507,7 @@ void draw() {
   line(0.416666667*iWidth+q,0.305248619*iHeight,0.411616162*iWidth+q,0.29281768*iHeight);
   line(0.411616162*iWidth+q,0.284530387*iHeight,0.416666667*iWidth+q,0.254143646*iHeight);
   
-  fill(234,223,217); //hands
+  fill(234,223,217); //hands 1
   beginShape();
   curveVertex(0.303030303*iWidth+q,0.305248619*iHeight);
   curveVertex(0.303030303*iWidth+q,0.305248619*iHeight);
@@ -477,7 +522,7 @@ void draw() {
   curveVertex(0.308080808*iWidth+q,0.303867403*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape();//hands 2
   curveVertex(0.181818182*iWidth+q,0.301104972*iHeight);
   curveVertex(0.181818182*iWidth+q,0.301104972*iHeight);
   curveVertex(0.161616162*iWidth+q,0.28038674*iHeight);
@@ -564,8 +609,7 @@ void draw() {
   curveVertex(0.351010101*iWidth+q,0.10359116*iHeight);
   endShape(CLOSE);
   
-  fill(213,199,188);
- //head
+  fill(213,199,188); //head
   beginShape();
   curveVertex(0.23989899*iWidth+q,0.19198895*iHeight);
   curveVertex(0.23989899*iWidth+q,0.19198895*iHeight);
@@ -613,7 +657,7 @@ void draw() {
   curveVertex(0.23989899*iWidth+q,0.193370166*iHeight);
   endShape(CLOSE);
   
-  beginShape(); //glasses
+  beginShape(); //glasses 1
   curveVertex(0.202020202*iWidth+q,0.082872928*iHeight);
   curveVertex(0.202020202*iWidth+q,0.082872928*iHeight);
   curveVertex(0.204545455*iWidth+q,0.092541436*iHeight);
@@ -627,7 +671,7 @@ void draw() {
   curveVertex(0.204545455*iWidth+q,0.080110497*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape(); //glasses 2
   curveVertex(0.272727273*iWidth+q,0.085635359*iHeight);
   curveVertex(0.272727273*iWidth+q,0.085635359*iHeight);
   curveVertex(0.282828283*iWidth+q,0.095303867*iHeight);
@@ -642,6 +686,7 @@ void draw() {
   curveVertex(0.272727273*iWidth+q,0.084254144*iHeight);
   endShape(CLOSE);
   
+  //glasses frame
   line(0.26010101*iWidth+q,0.085635359*iHeight,0.277777778*iWidth+q,0.087016575*iHeight);
   line(0.333333333*iWidth+q,0.085635359*iHeight,0.356060606*iWidth+q,0.085635359*iHeight);
   line(0.204545455*iWidth+q,0.084254144*iHeight,0.179292929*iWidth+q,0.075966851*iHeight);
@@ -675,7 +720,7 @@ void draw() {
   curveVertex(0.222222222*iWidth+q,0.071823204*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape(); //glasses 2
   curveVertex(0.282828283*iWidth+q,0.078729282*iHeight);
   curveVertex(0.282828283*iWidth+q,0.078729282*iHeight);
   curveVertex(0.297979798*iWidth+q,0.07320442*iHeight);
@@ -689,7 +734,7 @@ void draw() {
   curveVertex(0.287878788*iWidth+q,0.078729282*iHeight);
   endShape(CLOSE);
   
-  fill(218,208,216); //white eyes
+  fill(218,208,216); //white eyes 1
   beginShape();
   curveVertex(0.224747475*iWidth+q,0.080110497*iHeight);
   curveVertex(0.224747475*iWidth+q,0.080110497*iHeight);
@@ -700,7 +745,7 @@ void draw() {
   curveVertex(0.22979798*iWidth+q,0.080110497*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape(); //white eyes 2
   curveVertex(0.308080808*iWidth+q,0.082872928*iHeight);
   curveVertex(0.308080808*iWidth+q,0.082872928*iHeight);
   curveVertex(0.297979798*iWidth+q,0.082872928*iHeight);
@@ -712,7 +757,7 @@ void draw() {
   curveVertex(0.315656566*iWidth+q,0.084254144*iHeight);
   endShape(CLOSE);
   
-  fill(44,34,42); //black eyes
+  fill(44,34,42); //black eyes 1
   beginShape();
   curveVertex(0.222222222*iWidth+q,0.081491713*iHeight);
   curveVertex(0.222222222*iWidth+q,0.081491713*iHeight);
@@ -722,7 +767,7 @@ void draw() {
   curveVertex(0.237373737*iWidth+q,0.081491713*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape(); //black eyes 2
   curveVertex(0.300505051*iWidth+q,0.084254144*iHeight);
   curveVertex(0.300505051*iWidth+q,0.084254144*iHeight);
   curveVertex(0.300505051*iWidth+q,0.08839779*iHeight);
@@ -732,14 +777,14 @@ void draw() {
   curveVertex(0.305555556*iWidth+q,0.084254144*iHeight);
   endShape(CLOSE);
   
-  fill(44,35,40);//white interior eyes
+  fill(44,35,40);//white interior eyes 1
   beginShape();
   curveVertex(0.227272727*iWidth+q,0.081491713*iHeight);
   curveVertex(0.227272727*iWidth+q,0.081491713*iHeight);
   curveVertex(0.227272727*iWidth+q,0.081491713*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape();//white interior eyes 2
   curveVertex(0.305555556*iWidth+q,0.085635359*iHeight);
   curveVertex(0.305555556*iWidth+q,0.085635359*iHeight);
   curveVertex(0.305555556*iWidth+q,0.085635359*iHeight);
@@ -763,7 +808,7 @@ void draw() {
   curveVertex(0.742424242*iWidth+q,0.122928177*iHeight);
   endShape(CLOSE);
   
-  fill(209,194,155); // bear teeth
+  fill(209,194,155); // bear teeth top
   beginShape();
   curveVertex(0.656565657*iWidth+q,0.124309392*iHeight);
   curveVertex(0.656565657*iWidth+q,0.124309392*iHeight);
@@ -798,7 +843,7 @@ void draw() {
   curveVertex(0.656565657*iWidth+q,0.124309392*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape();  // bear teeth bottom
   curveVertex(0.654040404*iWidth+q,0.182320442*iHeight);
   curveVertex(0.654040404*iWidth+q,0.182320442*iHeight);
   curveVertex(0.671717172*iWidth+q,0.165745856*iHeight);
@@ -826,8 +871,7 @@ void draw() {
   curveVertex(0.664141414*iWidth+q,0.183701657*iHeight);
   endShape(CLOSE);
   
-  fill(67,96,114);
-//bear nose
+  fill(67,96,114);//bear nose
   beginShape();
   curveVertex(0.702020202*iWidth+q,0.085635359*iHeight);
   curveVertex(0.702020202*iWidth+q,0.085635359*iHeight);
@@ -857,6 +901,7 @@ void draw() {
   curveVertex(0.522727273*iWidth+q,0.099447514*iHeight);
   endShape(CLOSE);
   
+  //bear lines
   line(0.46969697*iWidth+q,0.772099448*iHeight,0.472222222*iWidth+q,0.832872928*iHeight);
   line(0.606060606*iWidth+q,0.850828729*iHeight,0.626262626*iWidth+q,0.825966851*iHeight);
   line(0.626262626*iWidth+q,0.814917127*iHeight,0.636363636*iWidth+q,0.767955801*iHeight);
@@ -883,7 +928,7 @@ void draw() {
   curveVertex(0.838383838*iWidth+q,0.077348066*iHeight);
   endShape(CLOSE);
   
-  beginShape(); //bear eyes
+  beginShape(); //bear eyes 1
   curveVertex(0.643939394*iWidth+q,0.089779006*iHeight);
   curveVertex(0.643939394*iWidth+q,0.089779006*iHeight);
   curveVertex(0.628787879*iWidth+q,0.092541436*iHeight);
@@ -894,7 +939,7 @@ void draw() {
   curveVertex(0.643939394*iWidth+q,0.089779006*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape(); //bear eyes 2
   curveVertex(0.767676768*iWidth+q,0.091160221*iHeight);
   curveVertex(0.767676768*iWidth+q,0.091160221*iHeight);
   curveVertex(0.772727273*iWidth+q,0.093922652*iHeight);
@@ -905,7 +950,7 @@ void draw() {
   curveVertex(0.767676768*iWidth+q,0.091160221*iHeight);
   endShape(CLOSE);
   
-  beginShape(); //bear claws
+  beginShape(); //bear claws 1
   curveVertex(0.462121212*iWidth+q,0.559392265*iHeight);
   curveVertex(0.462121212*iWidth+q,0.559392265*iHeight);
   curveVertex(0.477272727*iWidth+q,0.592541436*iHeight);
@@ -935,7 +980,7 @@ void draw() {
   curveVertex(0.595959596*iWidth+q,0.560773481*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape(); //bear claws 2
   curveVertex(0.797979798*iWidth+q,0.562154696*iHeight);
   curveVertex(0.797979798*iWidth+q,0.562154696*iHeight);
   curveVertex(0.815656566*iWidth+q,0.598066298*iHeight);
@@ -967,7 +1012,7 @@ void draw() {
   curveVertex(0.936868687*iWidth+q,0.555248619*iHeight);
   endShape(CLOSE);
 
-  beginShape();
+  beginShape(); //bear claws 3
   curveVertex(0.467171717*iWidth+q,0.825966851*iHeight);
   curveVertex(0.467171717*iWidth+q,0.825966851*iHeight);
   curveVertex(0.47979798*iWidth+q,0.848066298*iHeight);
@@ -1000,7 +1045,7 @@ void draw() {
   curveVertex(0.611111111*iWidth+q,0.824585635*iHeight);
   endShape(CLOSE);
   
-  beginShape();
+  beginShape();//bear claws 4
   curveVertex(0.762626263*iWidth+q,0.83839779*iHeight);
   curveVertex(0.762626263*iWidth+q,0.83839779*iHeight);
   curveVertex(0.777777778*iWidth+q,0.874309392*iHeight);
@@ -1123,7 +1168,7 @@ void draw() {
   line(0.313131313*iWidth+q,0.435082873*iHeight,0.23989899*iWidth+q,0.439226519*iHeight);
   line(0.310606061*iWidth+q,0.435082873*iHeight,0.444444444*iWidth+q,0.432320442*iHeight);
 
-  stroke(154,126,114); // face out
+  stroke(154,126,114); // face outline
   line(0.265151515*iWidth+q,0.227900552*iHeight,0.272727273*iWidth+q,0.20718232*iHeight);
   line(0.27020202*iWidth+q,0.205801105*iHeight,0.287878788*iWidth+q,0.200276243*iHeight);
   line(0.277777778*iWidth+q,0.262430939*iHeight,0.26010101*iWidth+q,0.230662983*iHeight);
@@ -1133,13 +1178,11 @@ void draw() {
   line(0.212121212*iWidth+q,0.116022099*iHeight,0.244949495*iWidth+q,0.100828729*iHeight);
   line(0.217171717*iWidth+q,0.116022099*iHeight,0.227272727*iWidth+q,0.133977901*iHeight);
   line(0.242424242*iWidth+q,0.128453039*iHeight,0.242424242*iWidth+q,0.121546961*iHeight);
-  
   line(0.244949495*iWidth+q,0.102209945*iHeight,0.242424242*iWidth+q,0.109116022*iHeight);
   line(0.23989899*iWidth+q,0.109116022*iHeight,0.267676768*iWidth+q,0.107734807*iHeight);
   line(0.267676768*iWidth+q,0.109116022*iHeight,0.285353535*iWidth+q,0.110497238*iHeight);
   line(0.295454545*iWidth+q,0.106353591*iHeight,0.29040404*iWidth+q,0.110497238*iHeight);
   line(0.277777778*iWidth+q,0.143646409*iHeight,0.297979798*iWidth+q,0.132596685*iHeight);
-  
   line(0.20959596*iWidth+q,0.142265193*iHeight,0.242424242*iWidth+q,0.154696133*iHeight);
   line(0.242424242*iWidth+q,0.151933702*iHeight,0.27020202*iWidth+q,0.157458564*iHeight);
   line(0.27020202*iWidth+q,0.157458564*iHeight,0.323232323*iWidth+q,0.153314917*iHeight);
@@ -1147,7 +1190,6 @@ void draw() {
   line(0.308080808*iWidth+q,0.157458564*iHeight,0.285353535*iWidth+q,0.186464088*iHeight);
   line(0.244949495*iWidth+q,0.16160221*iHeight,0.265151515*iWidth+q,0.179558011*iHeight);
   line(0.267676768*iWidth+q,0.07320442*iHeight,0.275252525*iWidth+q,0.060773481*iHeight);
-  
   line(0.287878788*iWidth+q,0.214088398*iHeight,0.287878788*iWidth+q,0.222375691*iHeight);
   line(0.146464646*iWidth+q,0.299723757*iHeight,0.118686869*iWidth+q,0.288674033*iHeight);
   line(0.159090909*iWidth+q,0.302486188*iHeight,0.143939394*iWidth+q,0.288674033*iHeight);
@@ -1157,12 +1199,11 @@ void draw() {
   line(0.303030303*iWidth+q,0.328729282*iHeight,0.340909091*iWidth+q,0.328729282*iHeight);
   line(0.396464646*iWidth+q,0.302486188*iHeight,0.373737374*iWidth+q,0.303867403*iHeight);
   line(0.378787879*iWidth+q,0.316298343*iHeight,0.404040404*iWidth+q,0.312154696*iHeight);
-  
   line(0.358585859*iWidth+q,0.111878453*iHeight,0.351010101*iWidth+q,0.102209945*iHeight);
   line(0.366161616*iWidth+q,0.096685083*iHeight,0.363636364*iWidth+q,0.102209945*iHeight);
   line(0.181818182*iWidth+q,0.100828729*iHeight,0.181818182*iWidth+q,0.089779006*iHeight);
 
-  stroke(86,47,32); //bear dark
+  stroke(86,47,32); //bear dark lines
   line(0.358585859*iWidth+q,0.111878453*iHeight,0.351010101*iWidth+q,0.102209945*iHeight);
   line(0.366161616*iWidth+q,0.096685083*iHeight,0.363636364*iWidth+q,0.102209945*iHeight);
   line(0.181818182*iWidth+q,0.100828729*iHeight,0.181818182*iWidth+q,0.089779006*iHeight);
@@ -1238,7 +1279,7 @@ void draw() {
   line(0.861111111*iWidth+q,0.918508287*iHeight,0.898989899*iWidth+q,0.899171271*iHeight);
   line(0.924242424*iWidth+q,0.879834254*iHeight,0.96969697*iWidth+q,0.841160221*iHeight);
   
-  stroke(174,109,71); // bear light
+  stroke(174,109,71); // bear light lines
   line(0.613636364*iWidth+q,0.197513812*iHeight,0.606060606*iWidth+q,0.111878453*iHeight);
   line(0.595959596*iWidth+q,0.113259669*iHeight,0.585858586*iWidth+q,0.197513812*iHeight);
   line(0.555555556*iWidth+q,0.182320442*iHeight,0.578282828*iWidth+q,0.120165746*iHeight);
@@ -1354,4 +1395,401 @@ void draw() {
   line(0.906565657*iWidth+q,0.498618785*iHeight,0.924242424*iWidth+q,0.531767956*iHeight);
   line(0.805555556*iWidth+q,0.102209945*iHeight,0.845959596*iWidth+q,0.114640884*iHeight);
   line(0.565656566*iWidth+q,0.106353591*iHeight,0.603535354*iWidth+q,0.107734807*iHeight);
+  
+  
+  // Mooyoung's portrait; Moves around when mouse is clicked.
+  if (mouseLeft == 1){
+    makeCollage(imgPath, xStart, yStart);          // Background; picture collage w/ different filters
+    portraitMooyoung(sizeRatio, xOffset, yOffset); // portrait
+    
+    // Moving portrait;  
+      // k represent different quadrant from 2x2 collage sections
+      // portrait move from one quadrant to another with 10 moving steps
+      // portrait size changes according to the stepSize vector
+    if (k == 0){
+      xOffset += 36.9;
+      yOffset += 5.2;
+      constrain(xOffset, 784, 1153);
+      constrain(yOffset, 112, 164);
+      if ((xOffset < 800) && (stepSize[i]==0)){
+        xOffset = 784; yOffset = 112;
+      }
+    }
+    if (k == 1){
+      xOffset += -41.9;
+      yOffset += 30.4;
+      constrain(xOffset, 734, 1153);
+      constrain(yOffset, 164, 468);
+    }
+    if (k == 2){
+      xOffset += 36.6;
+      yOffset += 5.4;
+      constrain(xOffset, 734, 1100);
+      constrain(yOffset, 468, 523);
+    }
+    if (k == 3){
+      xOffset += -31.6;
+      yOffset += -41.0;
+      constrain(xOffset, 784, 1100);
+      constrain(yOffset, 112, 523);
+    }
+    i += 1;
+    if ( i == 10){
+      i = 0;
+      //j = j*-1;
+      k += 1;
+      if ( k == 4){
+        k = 0;
+      }
+    }
+    sizeRatio = stepSize[i]/10 +1;
+
+  }
+
+}
+
+
+// Mooyoung's Functions
+
+void makeCollage(String imgPath, int xStart, int yStart){
+  // Function: take an image path and tile into 2x2 collage frame with four different filters
+  //           the tile start from (xStart, yStart) pixel
+  
+  
+  // Load image to work on
+  PImage imgML = loadImage(imgPath);
+  
+  
+  // Negative filter (Greenberg p.315)
+  image(imgML, 0 + xStart, imgML.height + yStart);
+  for (int x = 0 + xStart; x < imgML.width + xStart; x++){
+    for (int y = imgML.height + yStart; y < imgML.height*2 +yStart; y++){
+      color c = get(x,y);
+      set(x, y, color(255-red(c), 255-green(c), 255-blue(c)));
+    }
+  }
+    
+  // Random Neighbor filter (Greenberg p.317)
+  image(imgML, imgML.width + xStart, 0 + yStart);
+  for (int x = imgML.width + xStart; x < imgML.width*2 + xStart; x++){
+    for (int y = yStart; y < imgML.height + yStart; y++){
+      int newX = round(random(x-1, x+1)*100)/100;
+      int newY = round(random(y-1, y+1)*100)/100;
+      set(x, y, get(newX, newY));
+    }
+  }
+  
+  
+  // Grayscale filter (Greenberg p.337)
+  imgML.loadPixels();
+  for (int i = 0; i < imgML.pixels.length; i++) {
+    color c = imgML.pixels[i];
+    imgML.pixels[i] = color(red(c)*0.3+green(c)*0.59+blue(c)*0.11);
+  }
+  imgML.updatePixels();
+  image(imgML, imgML.width + xStart, imgML.height + yStart);
+    
+  // Obamicon (Greenberg p.387)
+  color darkBlue = color(0, 51, 76);
+  color red = color(217, 26, 33);
+  color lightBlue = color(112, 150, 158);
+  color yellow = color(252, 227, 166);
+
+  imgML.loadPixels();
+  for (int i = 0; i < imgML.pixels.length; i++) {
+    color c = imgML.pixels[i];
+    float total = red(c)+green(c)+blue(c);
+    if (total < 182) { // darkest colored pixels
+    imgML.pixels[i] = color(darkBlue);
+    }
+    else if (total < 364) { // 2nd darkest pixels
+    imgML.pixels[i] = color(red);
+    }
+    else if (total < 546) { // lighter pixels
+    imgML.pixels[i] = color(lightBlue);
+    }
+    else { // lightest pixels
+    imgML.pixels[i] = color(yellow);
+    }
+  }
+  imgML.updatePixels();
+  image(imgML, 0 + xStart, 0 + yStart);
+  
+}
+
+
+
+// Function to draw Mooyoung's Face
+void portraitMooyoung(float sizeRatio, float xOffset, float yOffset){
+  // Function: draw a predefined portrait with given sizeRatio
+  //           the drawing templet starts at (xOffset, yOffset) pixel
+    
+  float[] mouthCoords = {
+  -0.205365178,  0.258484609,
+  -0.102682589,  0.24269929,
+  -0.044923633,  0.24269929,
+  0,  0.24269929,
+  0.077011942,  0.23875296,
+  0.166859207,  0.24664562,
+  0.121935575,  0.286108919,
+  0.07059428,  0.305840568,
+  -0.019252985,  0.317679558,
+  -0.102682589,  0.310679558,
+  -0.166859207,  0.287947908,
+  -0.21178284,  0.258484609
+  };
+  
+  float[] noseCoords = {
+  -0.275959458,  0.179558011,
+  -0.231035825,  0.159826361,
+  -0.147606222,  0.120363062,
+  -0.134770898,  0.120363062,
+  -0.160441545,  0.128255722,
+  -0.147606222,  0.163772691,
+  -0.044923633,  0.199289661,
+  -0.019252985,  0.203235991,
+  0.044923633,  0.187450671,
+  0.096264927,  0.175611681,
+  0.128353236,  0.144041042,
+  0.096264927,  0.120363062,
+  0.205365178,  0.159826361,
+  0.243871149,  0.183504341,
+  0.256706473,  0.203235991
+  };
+  
+  float[] shirtCoords = {
+  -0.667436829,  0.751775848,
+  -0.616095534,  0.708366219,
+  -0.474906974,  0.657063931,
+  -0.295212444,  0.621546961,
+  -0.179694531,  0.589976322,
+  -0.173276869,  0.570244672,
+  -0.198947516,  0.530781373,
+  -0.205365178,  0.503693765,
+  -0.166859207,  0.550513023,
+  -0.083429604,  0.629439621,
+  -0.006417662,  0.6925809,
+  0.121935575,  0.589976322,
+  0.301630105,  0.463693765,
+  0.404312694,  0.412391476,
+  0.468489313,  0.341357537,
+  0.474906974,  0.325572218,
+  0.661019167,  0.443962115,
+  0.686689814,  0.479479084,
+  0.834296036,  0.503157064,
+  1.007572905,  0.574191002,
+  1.180849774,  0.649171271
+  };
+  
+  float[] shirtCoords2 = {
+  0.179694531,  0.818863457,
+  0.506995283,  0.412391476,
+  0.49415996,  0.337411208,
+  0.667436829,  0.455801105,
+  0.686689814,  0.491318074,
+  0.63534852,  0.6925809,
+  0.481324636,  0.747829519,
+  0.571171902,  0.810970797
+  };
+  
+  float[] tieCoords = {
+  -0.314465429,  0.657063931,
+  -0.179694531,  0.67679558,
+  -0.044923633,  0.712312549,
+  0.096264927,  0.67284925,
+  0.160441545,  0.728097869,
+  0.154023884,  0.810970797,
+  0.064176618,  0.810970797,
+  -0.038505971,  0.771507498,
+  -0.077011942,  0.795185478,
+  -0.3529714,  0.826756117,
+  -0.378642047,  0.779400158,
+  -0.314465429,  0.657063931
+  };
+
+  float[] hairCoords = {
+  -0.5262,-0.0848,
+  -0.5198,-0.2032,
+  -0.4749,-0.3453,
+  -0.4428,-0.4045,
+  -0.3851,-0.4084,
+  -0.3851,-0.4084,
+  -0.3401,-0.4558,
+  -0.3016,-0.4795,
+  -0.3016,-0.515,
+  -0.2118,-0.511,
+  -0.1797,-0.5387,
+  -0.1412,-0.5229,
+  -0.1284,-0.5545,
+  -0.0578,-0.5505,
+  0.0128,-0.5702,
+  0.1027,-0.5387,
+  0.1348,-0.5426,
+  0.2182,-0.5308,
+  0.2567,-0.4834,
+  0.3145,-0.4953,
+  0.3658,-0.4716,
+  0.3979,-0.4242,
+  0.3915,-0.365,
+  0.4942,-0.3729,
+  0.4685,-0.3532,
+  0.5391,-0.294,
+  0.5712,-0.2348,
+  0.5776,-0.1914,
+  0.5776,-0.1243,
+  0.5712,-0.073,
+  0.4749,-0.0375,
+  0.4364,-0.144,
+  0.43,-0.2072,
+  0.3722,-0.2861,
+  0.2695,-0.3295,
+  0.154,-0.3611,
+  0.0513,-0.3611,
+  -0.0128,-0.3493,
+  -0.1284,-0.369,
+  -0.2567,-0.3414,
+  -0.3851,-0.2901,
+  -0.4236,-0.2585,
+  -0.4492,-0.1875,
+  -0.4557,-0.1361,
+  -0.4749,-0.073,
+  -0.5006,-0.0691
+  };
+
+  pushMatrix();
+  // transformation; Need to rotate the figures in order to match the original picture orientation
+  rotate(-0.14);
+  translate(xOffset - 50, yOffset - 8);  // (-50, -8) is an additional offset to match the original image
+  //translate(xOffset, yOffset);  // (-50, -8) is an additional offset to match the original image
+    
+  // Size of portrait
+  float newWidth = 371*sizeRatio;
+  float newHeight = 362*sizeRatio;
+  
+  // head
+  strokeWeight(3);
+  float headWidth = newWidth * .42;
+  float headHeight = newHeight * .7;
+  noFill();
+  stroke(50);
+  ellipse(newWidth/2, newHeight/2, headWidth, headHeight); 
+  
+  // Eyes with pupil
+  float eyeWidth = headWidth / 6;
+  float eyeHeight = eyeWidth / 6;
+  stroke(0);
+  strokeWeight(1);
+  ellipse(newWidth/2 - headWidth/4.5, newHeight/2, eyeWidth, eyeHeight); // eye LH
+  ellipse(newWidth/2 + headWidth/5, newHeight/2, eyeWidth, eyeHeight);   // eye RH
+  fill(51, 0, 0); noStroke();
+  ellipse(newWidth/2 - headWidth/4.5, newHeight/2, eyeHeight, eyeHeight);  //pupill LH
+  ellipse(newWidth/2 + headWidth/5, newHeight/2, eyeHeight, eyeHeight);    //pupill RH
+    
+  // Ears
+  //fill(255, 255, 0,  0);
+  noFill();
+  stroke(96, 96, 96);
+  strokeWeight(3);
+  float x1 = newWidth/3.4;
+  float y1 = newHeight/2 - eyeHeight;
+  float x2 = newWidth/4.3;
+  float y2 = newHeight/2 - eyeWidth * 1.5;
+  float y3 = newHeight/2 + eyeWidth*2;
+  float x4 = newWidth/3.25;
+  bezier(x1, y1, x2, y2, x2, y3, x4, y3);
+  bezier(newWidth - x1, y1, newWidth - x2 + eyeWidth*.5, y2, newWidth - x2 +eyeWidth*.5, y3, newWidth - x1*1.04, y3);
+  
+  // Glasses
+  float glassWidth = eyeWidth * 2;
+  float glassHeight = eyeHeight * 8;
+  float lenseRadius = eyeHeight * 5;
+  noFill();
+  strokeWeight(3);
+  rect(newWidth/2 - headWidth/4 - glassWidth/2, newHeight/1.95 - glassHeight/2, glassWidth, glassHeight, lenseRadius);
+  rect(newWidth/2 + headWidth/5 - glassWidth/2, newHeight/1.95 - glassHeight/2, glassWidth, glassHeight, lenseRadius);
+  line(newWidth/2 - headWidth/4 + eyeWidth, newHeight/2, newWidth/2 + headWidth/5 - eyeWidth, newHeight/2);  
+  line(newWidth/2 - headWidth/5 - glassWidth/2, newHeight/2 - glassHeight/3, x1, y1);
+  line(newWidth/2 + headWidth/5 + glassWidth/2, newHeight/2 - glassHeight/5, newWidth - x1, y1);
+  
+  // Left eyebrow
+  fill(50, 175);
+  noStroke();
+  beginShape();
+  vertex(newWidth/2 - 0.3273*headWidth, newHeight/2 -0.1085*headHeight);
+  vertex(newWidth/2 - 0.1219*headWidth, newHeight/2 -0.0927*headHeight);
+  vertex(newWidth/2 - 0.1412*headWidth, newHeight/2 -0.0730*headHeight);
+  vertex(newWidth/2 - 0.3080*headWidth, newHeight/2 -0.0809*headHeight);
+  vertex(newWidth/2 - 0.3722*headWidth, newHeight/2 -0.0769*headHeight);
+  endShape(CLOSE);
+  
+  // Right eyebrow
+  fill(50, 175);
+  noStroke();
+  beginShape();
+  vertex(newWidth/2 + 0.2695*headWidth, newHeight/2 -0.1085*headHeight);
+  vertex(newWidth/2 + 0.0706*headWidth, newHeight/2 -0.0927*headHeight);
+  vertex(newWidth/2 + 0.0898*headWidth, newHeight/2 -0.0730*headHeight);
+  vertex(newWidth/2 + 0.1861*headWidth, newHeight/2 -0.0769*headHeight);
+  vertex(newWidth/2 + 0.3401*headWidth, newHeight/2 -0.0611*headHeight);
+  endShape(CLOSE);  
+  
+  // Hair
+  fill(40);
+  noStroke();
+  beginShape();
+  for (int i = 0; i<hairCoords.length; i +=2){
+    vertex(newWidth/2 + hairCoords[i]*headWidth, newHeight/2 + hairCoords[i+1]*headHeight);
+  }
+  endShape(CLOSE);
+  
+  // Mouth
+  noFill();
+  stroke(75, 0, 30);
+  strokeWeight(4);
+  beginShape();
+  for (int i = 0; i<mouthCoords.length; i +=2){
+    vertex(newWidth/2 + mouthCoords[i]*headWidth, newHeight/2 + mouthCoords[i+1]*headHeight);
+  }
+  endShape(CLOSE);
+  
+  // Nose
+  noFill();
+  stroke(125);
+  strokeWeight(2);
+  beginShape();
+  for (int i = 0; i<noseCoords.length; i +=2){
+    vertex(newWidth/2 + noseCoords[i]*headWidth, newHeight/2 + noseCoords[i+1]*headHeight);
+  }
+  endShape();
+
+
+  // Shirt
+  noFill();
+  stroke(70);
+  strokeWeight(8);
+  beginShape();
+  for (int i = 0; i<shirtCoords.length; i +=2){
+    vertex(newWidth/2 + shirtCoords[i]*headWidth, newHeight/2 + shirtCoords[i+1]*headHeight);
+  }
+  endShape();
+  
+  beginShape();
+  for (int i = 0; i<shirtCoords2.length; i +=2){
+    vertex(newWidth/2 + shirtCoords2[i]*headWidth, newHeight/2 + shirtCoords2[i+1]*headHeight);
+  }
+  endShape();
+    
+  // Bowtie
+  noFill();
+  stroke(110,0,0);
+  strokeWeight(3);
+  beginShape();
+  for (int i = 0; i<tieCoords.length; i +=2){
+    vertex(newWidth/2 + tieCoords[i]*headWidth, newHeight/2 + tieCoords[i+1]*headHeight);
+  }
+  endShape();
+  
+  //reset for Yao
+  strokeWeight(1);
+  popMatrix();
 }
