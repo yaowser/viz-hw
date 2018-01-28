@@ -343,8 +343,8 @@ void draw() {
   fill(40);
   noStroke();
   beginShape();
-  for (int i = 0; i<enemyFire2.length; i +=2){
-    vertex(enemyFire2[i]*5, enemyFire2[i+1]*5);
+  for (int i = 0; i<ship.length; i +=2){
+    vertex(ship[i]*5, ship[i+1]*5);
   }
   endShape(CLOSE);
 }
