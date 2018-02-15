@@ -2,7 +2,7 @@ PImage img;
 
 void setup() {
   size(500, 380);                
-  img = loadImage("637.jpg");
+  img = loadImage("olympics.jpg");
   img.resize(493, 380);
 }
 
