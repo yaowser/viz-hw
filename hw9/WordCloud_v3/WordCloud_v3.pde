@@ -1,5 +1,6 @@
 //had to separate files because wordcloud can't render in P2D and Pshader in the game requires P2D...incompatibility with each other
 //sentiment analysis of similar game reviews in the app store for turret games
+//source https://wordcram.wordpress.com/
 
 import java.awt.Shape;
 import java.awt.geom.Area;
@@ -35,7 +36,7 @@ void setup()
   initWordCram(BasedPlacer);
   textSize(30);
   fill(255);
-  text("Press Space to Continue",600,780);
+  text("Click to Continue",600,780);
 }
 
 void draw() {
@@ -43,17 +44,13 @@ void draw() {
     playMusic(audioName);
     play = true;
   }
-  if (next == 0){
+  if (next == 1){
     if (wordCram.hasMore()) {
-      if (next == 0){
+      if (next == 1){
         wordCram.drawNext();
       } 
     }
   } else {
-    fill(255);
-    rect(0,0,width,height);
-    fill(0);
-    text("Continue to Turret Game",width/2,height/2);
   }
   fill(255);
   noStroke();
@@ -71,10 +68,8 @@ void initWordCram(ShapeBasedPlacer BasedPlacer) {
       .withColors(color(#0080FF), color(#FFC0CB), color(#FDEE00));
 }
 
-void keyPressed() {
-  if (key == ' ') {
+void mousePressed() {
     next = 1;
     file.stop();
     playMusic(audioName2);
-  }
 }
