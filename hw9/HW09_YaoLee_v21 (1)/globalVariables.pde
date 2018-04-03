@@ -1,6 +1,6 @@
-import java.util.Collections;
-import processing.video.*;
-import ddf.minim.*;
+
+//loading page
+int next;
 
 //sound
 Minim minim;

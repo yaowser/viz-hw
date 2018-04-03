@@ -137,7 +137,7 @@ class EnemyBlockies extends enemy {
     entityWidth = 25;
     entityHeight = 25;
     speed = 3;
-    health = health2 = (100*diffMult)*(1+(currentRound+1+overtimeRound)/10);
+    health = health2 = (100*diffMult)*(1+(currentRound+1+overtimeRound)/3);
     value = 20;
   }
 
@@ -172,7 +172,7 @@ class EnemyKinArt extends enemy {
     entityWidth = 25;
     entityHeight = 25;
     speed = 1;
-    health = health2 = (8000*diffMult)*(1+(currentRound+1+overtimeRound)/10);
+    health = health2 = (4000*diffMult)*(1+(currentRound+1+overtimeRound)/10);
     value = 1000;
   }
 
@@ -204,7 +204,7 @@ class EnemyRay extends enemy {
     entityWidth = 25;
     entityHeight = 25;
     speed = 1.5;
-    health = health2 = (200*diffMult)*(1+(currentRound+1+overtimeRound)/10);
+    health = health2 = (200*diffMult)*(1+(currentRound+1+overtimeRound)/3);
     value = 60;
   }
 
@@ -240,7 +240,7 @@ class EnemySpider extends enemy
     entityWidth = 25;
     entityHeight = 25;
     speed = 4.5;
-    health = health2 = (70*diffMult)*(1+(currentRound+1+overtimeRound)/10);
+    health = health2 = (70*diffMult)*(1+(currentRound+1+overtimeRound)/3);
     size = 20;
     value = 40;
   }

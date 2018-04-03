@@ -273,8 +273,8 @@ class VerletBlock extends VerletObj {
 
 
     
-    strokeWeight(.75);
-    stroke(185, 135, 130);
+    strokeWeight(1.5);
+    stroke(255, 255, 51);
     for (VerletStick s : sticks) {
       s.display();
     }
@@ -324,8 +324,8 @@ class VerletRay extends VerletObj {
 //    }
 //    endShape(CLOSE);
 
-    strokeWeight(.75);
-    stroke(195, 155, 195);
+    strokeWeight(1.5);
+    stroke(255,102,178);
     for (VerletStick s : sticks) {
       s.display();
     }
@@ -372,8 +372,8 @@ class VerletSpider extends VerletObj {
   }
 
   void display() {
-    strokeWeight(2.75);
-    stroke(255, 195, 255);
+    strokeWeight(2.5);
+    stroke(102,255,102);
     for (VerletStick s : sticks) {
       s.display();
     }
