@@ -1,0 +1,555 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import ddf.minim.*; 
+import ddf.minim.analysis.*; 
+import ddf.minim.effects.*; 
+import ddf.minim.signals.*; 
+import ddf.minim.spi.*; 
+import ddf.minim.ugens.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+
+public class HW10_YaoLee_v15_Java extends PApplet {
+	//Assignment 10: Final 3D Java Visualization
+	//Using Processing as an embedded library in Java, create a 3D visualization of a data source of your choosing.
+	//Music Playlist Player
+	// Reference: minim usage (Stephen McGirr  C14730095  7/12/2015)
+
+	// Mouse left:          Move to new position
+	// Mouse right:         Toggle loop 
+	// Keyboard Inputs
+	// Up/Down arrows:      Sphere band rotate about x-axis
+	// Left/Right arrows:   Block band rotate about y-axis
+	// Left Alt:            Change views
+	// Spacebar:            Toggle pause
+	// Shift:               Previous Song
+	// Ctrl:                Next Song
+
+	// Global variables
+	//import processing.core.*;
+
+	// music
+	 
+
+
+
+
+
+	int w;
+	int c;
+	float amplitude;
+	Minim minim;
+	FFT fft;
+	AudioPlayer song;
+	AudioMetaData meta;
+	String[] cool = {"Hans Zimmer - Leaving Wallbrook - On the Road.mp3","Beethoven - 7th Symphony - 2nd movement.mp3","Isaac Hayes - Hung Up On My Baby.mp3","Pl cido Domingo - La Traviata.mp3","Keith Mansfield - Love de Luxe.mp3","Visioneers - Ike's Mood I.mp3","Andrea Bocelli - Con Te Partiro.mp3"};
+
+	// Sphere/Block bands;
+	ArrayList<SphereBands> sbs = new ArrayList(1);
+	BlockBands bbs;
+	int binSize;
+
+	ShootingStar star;
+
+	// Keyboard Interaction
+	float p = 0, q = 0, s = 1;   // size and location parameters 
+	int count = 0, pause = -1;
+	Boolean loop = false;
+	public void keyPressed() { 
+	  if (key == ' ') { //manual play/pause control
+	    pause *= -1;
+	    if(song.isPlaying()) {
+	      song.pause();
+	    }
+	    else if(song.position() == song.length()) {
+	      song.rewind();
+	      song.play();
+	    }
+	    else {
+	      song.play();
+	    }
+	  }
+	  if (key == CODED) {
+	    if (keyCode == UP) { 
+	      p -= PI/8 ; // rotate about x-axis
+	    } else if (keyCode == DOWN) {
+	      p += PI/8;  // rotate about x-axis
+	    } else if (keyCode == RIGHT) { //position
+	      q -= PI/8;  // rotate about y-axis
+	    } else if (keyCode == LEFT) {
+	      q += PI/8;  // rotate about y-axis
+	    } else if (keyCode == ALT) {
+	      s *= -1;  // change view
+	    } else if (keyCode == SHIFT) {
+	      song.pause();
+	      count--; // previous song
+	      if (count < 0) {
+	        count = cool.length - 1;
+	      }
+	      playThis(cool[count], this);
+	    } else if (keyCode == CONTROL) {
+	      song.pause();
+	      count++; // next song
+	      if (count > cool.length - 1) {
+	        count = 0;
+	      }
+	      playThis(cool[count], this);
+	    }
+	  }
+	}
+
+	public void playThis(String cool, PApplet p) {
+
+	  //intialize mimim object
+	  minim = new Minim(p);
+	  // specify 2048 for the length of the sample buffers
+	  song = minim.loadFile(cool, 2048);
+	  meta = this.song.getMetaData();
+	  song.play();
+
+	  /*intializa FFT object
+	   get length of audio buffers ,   get the sample rate of audio*/
+	  fft = new FFT(song.bufferSize(), song.sampleRate());
+
+	  //Use log averags to space the frequencys 
+	  /* logAverages() will group frequency bands by octave and 
+	   allows you to specify the size of the smallest octave to use (in Hz) and 
+	   also how many bands to split each octave into. */
+	  fft.logAverages(60, 4);
+
+	  // SphereBands object number matches w/ fft.avgSize
+	  for ( int i = 0; i<fft.avgSize(); i++) {
+	    sbs.add(new SphereBands(p));
+	  }
+	  bbs = new BlockBands(fft.avgSize(), this);
+	  
+	  star = new ShootingStar(this);
+	}
+
+	public void setup() {
+	  
+	  surface.setResizable(true);
+
+	  // music
+	  playThis(cool[count], this);
+	 
+	  frameRate(60);
+	}
+
+	public void draw() {
+	  background(0);
+	  textAlign(CENTER, CENTER);
+	  
+	  // Lights
+	  directionalLight(255, 255, 255, 1, 1, -1);
+	  //directionalLight(0, 0, amplitude*1000, -1, 0, 0);  // light change w/ amplitude
+	  //directionalLight(255-amplitude*1000, 0, 0, 1, 0, 0);  // light change w/ amplitude
+	  //lights();
+	  directionalLight(amplitude*1000, amplitude*1000, amplitude*1000, -1, 0, 0); 
+	  
+	  // Music
+	  if(!song.isPlaying() && pause == -1) { //autoplay to next song if not paused
+	    if (loop == false) { // otherwise loop
+	      count++;
+	      if (count > cool.length - 1) {
+	        count = 0;
+	      }
+	    }
+	    playThis(cool[count], this);
+	  } 
+	  
+	  // Background shootig stars
+	  star.display(this);
+	  
+	  // Frequency Visualization
+	  fft.forward(song.mix);
+
+	  binSize = fft.avgSize();
+	  
+	  //iterate through the entire array of bands
+	  for (int i = 0; i<binSize; i++) { 
+	    c=i;
+	    amplitude =fft.getAvg(i);
+	    
+	    // 3D visualization
+	    if (s == 1) {
+	      //void display(float z, float gravity, float xRotate) {
+	      sbs.get(i).display(this, i*height/100+100, amplitude/5,  p);
+	    } else {
+	      //display(float amplitude, float yRotate, int binSize, int i)
+	      bbs.display(this, amplitude*10, q, binSize, i);
+	    }
+	  }
+	  
+	  // Music status bar
+	  playBar();
+	}
+
+	public void mousePressed() {
+		
+	  if (mouseButton == LEFT) {
+	    // choose a position to cue to based on where the user clicked.
+	    // the length() method returns the length of recording in milliseconds.
+	    int position = PApplet.parseInt(map(mouseX, 0, width, 0, song.length()));
+	    song.cue(position);
+	    
+	    //star.update(); // check updated screen size
+	  } else if (mouseButton == RIGHT) {
+	    if (loop == true){
+	      loop = false;
+	    } else {
+	      loop = true;
+	    }
+	  }
+	}
+
+	public void playBar() {
+	  float posx = map(song.position(), 0, song.length(), 0, width);
+	  noStroke();
+	  fill(0xffFF9F00);
+	  rect(0,height-25,posx,25);
+	  fill(0xff0093AF);
+	  rect(posx,height-25,width,25);
+	  strokeWeight(4); //playhead
+	  stroke(0,0,255);
+	  line(posx, height-25, posx, height);
+	  fill(0);
+	  textSize(20);
+	  text(cool[count], width/2, height-15);
+	  text(song.position(), width-45, height-15);
+	  text("Loop: "+loop, 55, height-15);
+	}
+	
+	
+	class BlockBand {
+		  
+		  PApplet p;
+		  
+		  int particleCount = 30;
+		  float binWidth;
+		  float[] x = new float[particleCount];
+		  float[] ampHist = new float[particleCount];
+		  float[] rotRad= new float[particleCount];
+
+
+		  BlockBand(PApplet p) {
+		    this.p = p;
+		    p.noStroke();
+		    for (int i = 0; i < particleCount; i++) {
+		      x[i] = 0;
+		      rotRad[i] = -2*p.PI/particleCount*i;
+		    }
+		  }
+
+		  void display(PApplet p, float z, float amplitude, int col, float bins, float yRotate, int binNo) {
+		    this.p = p;
+		    p.strokeWeight(1);
+		    p.hint(p.ENABLE_DEPTH_MASK);
+		    binWidth = (p.width-300)/bins;
+
+		    // memory for the previous amplitudes
+		    for (int i = 0; i < particleCount; i++) {
+		      if (i !=0) {
+		        ampHist[particleCount-i] =  ampHist[particleCount-i-1];
+		      } else {
+		        ampHist[0] = amplitude;
+		      }
+		    }
+		    p.pushMatrix();  // for 3d view w/ rotateX
+		    //rotateX(xRotate);
+		    p.rotateY(yRotate);
+		    p.translate(200+binNo*binWidth, p.height/2, -z);
+
+
+		    // blocks
+		    for (int i = 0; i < particleCount; i++) {
+		      p.pushMatrix();   
+		      //translate(0, 100, 100);
+		      p.rotateX(rotRad[i]);
+		      p.fill(col);
+		      p.box(binWidth, ampHist[i], 20);
+		      p.popMatrix();
+		    }
+		    p.popMatrix();
+		  }
+		}
+	
+	class BlockBands {
+
+		  PApplet p;
+		  // class variables 
+
+		  final ArrayList<BlockBand> blockBands= new ArrayList();
+		  int col;
+		  float maxAmp; // record of highest amplitude
+
+		  // constructors
+
+		  BlockBands() {
+		  }
+
+		  BlockBands(int binSize, PApplet p) {
+		    this.p = p;
+		    //create numerous block bands
+		    for ( int i = 0; i<binSize; i++) {
+		      blockBands.add(new BlockBand(p));
+		    }
+		  }
+
+		  // methods
+
+		  void display(PApplet p, float amplitude, float yRotate, int binSize, int i) {
+		    this.p = p;
+		    //p.hint(ENABLE_DEPTH_MASK);
+		    // record maxAmp
+		    if (amplitude > maxAmp) { 
+		      maxAmp = amplitude;
+		    }
+		    //color change
+		    if (amplitude > 0.6*maxAmp) {
+		      col = p.color(255, 0, 255);
+		    } else {
+		      col = p.color(i*15, 255, 255-i*15 );
+		    }
+
+		    //void display(PApplet p, float z, float amplitude, int col, float bins, float yRotate, int binNo) {
+		    blockBands.get(i).display(p, 100, amplitude, col, binSize, yRotate, i);
+		  }
+		}
+	
+	
+	class ShootingStar {
+
+		  PApplet p;
+
+		  // Snowflake; 2018.02.02 Mooyoung Lee
+
+		  int particleCount = 100;
+		  float particleCountCurrent = 0;
+		  float birthRate =1;
+		  float[] x = new float[particleCount];
+		  float[] y = new float[particleCount];
+		  float[] x2 = new float[particleCount];
+		  float[] y2 = new float[particleCount];
+		  int[] sideCount = new int[particleCount];
+		  float[] radius= new float[particleCount]; 
+		  float[] speedX= new float[particleCount];
+		  float[] speedY= new float[particleCount];
+		  float[] gravity = new float[particleCount];
+		  float[] termimalSpd = new float[particleCount];
+
+		  // screen limit for rain/snow
+		  int xmin = 0; 
+		  int xmax = 2000;
+		  int ymin = 0;
+		  int ymax = 1100;
+
+		  ShootingStar(PApplet p) {
+		    this.p = p;
+		    // initial particle setup
+		    for (int i=0; i< particleCount; i++) {
+		      x[i] = p.random(xmin+100, xmax-100);
+		      y[i] = p.random(ymin+100, ymax-100);
+
+		      sideCount[i] = 8;//int(random(3, 10));
+		      speedX[i] = p.random(1, 30);
+		      speedY[i] = p.random(-1, 1);
+		      radius[i] = p.random(1, 13);
+		      gravity[i] = p.random(-1, 1);
+		      termimalSpd[i] = radius[i]*.2f;
+
+		      x2[i] = p.random(xmin+100, xmax-100);
+		      y2[i] = p.random(ymin+100, ymax-100);
+		    }
+		  }
+
+
+
+		  void display(PApplet p) {
+		    this.p = p;
+		    p.stroke(p.random(50, 150));
+		    for (int i=0; i< particleCountCurrent; i++) { 
+		      p.strokeWeight(radius[i]/4);
+		      p.line(x[i], y[i], x[i]+speedX[i], y[i]+speedY[i]*2) ;
+		      x[i] += speedX[i];// + random(-1, 1);  // w/ jitter effect
+		      y[i] += speedY[i];
+		      speedX[i] += gravity[i];//
+		      speedX[i] = p.constrain(speedX[i], 5, termimalSpd[i]*13);
+
+		      checkCollisions(i);
+		    }
+		    if (particleCountCurrent < particleCount - birthRate) {
+		      particleCountCurrent += birthRate;
+		    }
+		  }
+
+		  void checkCollisions(int i) {
+		    
+		    if (x[i] > xmax) {
+		      x[i] = xmin;
+		    } else if (x[i] < xmin) {
+		      x[i] = xmax;
+		    }
+		    if (y[i] > ymax) {
+		      y[i] = ymin;
+		    }
+		  }
+		  void checkCollisions2(int i, PApplet p) {
+		    this.p = p;
+		    if (x2[i] > xmax) {
+		      x2[i] = xmin+100+p.random(0, 50);
+		      y2[i] = ymin+100+p.random(-30, 0);
+		    } 
+		    if (y[i] > ymax) {
+		      y2[i] = ymin;
+		    } else if (y[i] < ymin) {
+		      y2[i] = ymax;
+		    }
+		  }
+		}
+
+	
+	class SphereBand {
+
+		  PApplet p;
+		  
+		  int particleCount = 72;
+		  float radius = 2; 
+		  float speedR = 5;
+		  float gravity = 0;
+		  float termimalRadius = 500;
+		  boolean hitBoundary = false;
+		  float[] x = new float[particleCount];
+		  float[] y = new float[particleCount];
+		  float[] rotRad= new float[particleCount];
+
+		  SphereBand(PApplet p) {
+		    this.p = p;
+		    p.sphereDetail(8);
+		    p.noStroke();
+
+		    for (int i = 0; i < particleCount; i++) {
+		      x[i] = 0;
+		      y[i] = 0;
+		      rotRad[i] = 2*p.PI/particleCount*i;
+		    }
+		  }
+
+		  void display(PApplet p, float z, float gravity, int col, float xRotate) {
+		    this.gravity = gravity;
+		    speedR += gravity;
+
+		    p.pushMatrix();  // for 3d view w/ rotateX
+		    p.rotateX(xRotate);
+		    //rotateY(PI/6);
+		    p.translate(p.width/2, p.height/2, -z);
+		    
+		    // spheres
+		    for (int i = 0; i < particleCount; i++) {
+
+		      p.pushMatrix();   
+		      p.translate(x[i], y[i]);
+		      //fill(mouseX * 2, 0, 160);
+		      p.fill(col);
+		      p.sphere(radius);
+		      p.popMatrix();
+
+		      if (p.dist(0, 0, x[i], y[i]) < termimalRadius) {
+		        x[i] += speedR*p.cos(rotRad[i]);
+		        y[i] += speedR*p.sin(rotRad[i]);
+		        hitBoundary = false;
+		      } else {
+		        hitBoundary = true;
+		      }
+		    }
+		    p.popMatrix();
+		  }
+
+		  boolean checkBoundary() {
+		    return hitBoundary;
+		  }
+		}
+	
+	class SphereBands {
+
+		  PApplet p;
+		  
+		  // class variables
+
+		  SphereBand sphereBand;
+		  int numBands = 4;
+		  int currentNumBands = 0;
+		  boolean maxNumReached = false;
+		  ArrayList<SphereBand> bands = new ArrayList(1);
+		  float bandCountCurrent = 0;
+		  float birthRate = 0.6f;
+		  int col;
+
+		  // class constructors
+
+		  SphereBands(PApplet p) {
+		    this.p = p;
+		    //create numerous sphere bands
+		    for ( int i = 0; i<numBands; i++) {
+		      bands.add(new SphereBand(p));
+		    }
+		  }
+
+		  //methods
+		  
+		  void display(PApplet p, float z, float gravity, float xRotate) {
+		    this.p = p;
+		    //println(gravity);
+		    for (int b = 0; b <p.floor(bandCountCurrent); b++) {
+		      if (bands.get(b).checkBoundary()) {
+		        bands.remove(b);
+		        bandCountCurrent -= 1;
+		      } else {
+		        if (b==0) {
+		          col = p.color(gravity*40, gravity*40, 0);
+		        } else if (b==2) {
+		          col = p.color(0, gravity*40, gravity*40);
+		          //}else if(b==4){
+		          //  col = color(0,0,gravity*40);
+		        } else {
+		          col = p.color(p.random(255), p.random(255), p.random(255));
+		        }
+		        bands.get(b).display(p, z, -1/gravity, col, xRotate);
+		        bands.add(new SphereBand(p));
+		      }
+		    }
+
+		    // birth control
+		    if (bandCountCurrent + birthRate < numBands) {
+		      bandCountCurrent += birthRate;
+		    } else {
+		      maxNumReached = true;
+		    }
+		  }
+		}
+	
+	  public void settings() {  size(1200, 820, P3D); }
+	  
+	  static public void main(String[] passedArgs) {
+		  PApplet.main( new String[] { "HW10_YaoLee_v15_Java" } );
+	  }
+//	  static public void main(String[] passedArgs) {
+//	    String[] appletArgs = new String[] { "HW10_YaoLee_v15_Java" };
+//	    if (passedArgs != null) {
+//	      PApplet.main(concat(appletArgs, passedArgs));
+//	    } else {
+//	      PApplet.main(appletArgs);
+//	    }
+//	  }
+}
