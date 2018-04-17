@@ -1,0 +1,19 @@
+map the entire music file in bins, like a histogram distribution of decibles
+
+30 bins
+
+music is 60 to 120 decibles and tailored range to the specific min max of each music file
+
+the amplitude of each bin is determined by how many bits of data is in that time frame for 60 frames a second...changes while it rotates
+
+visual interpretation of data in 3D
+
+==
+
+obviously , you can program music, but we decided to import different genres of music to show the variations in how the distribution and amplitude changes per music file
+
+==
+
+engine block going lightspeed in space
+
+water droplets where waves are created based on the same concept vertically instead of horizontally
